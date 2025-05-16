@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DATN_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250516150831_TestConnectToRailway")]
+    [Migration("20250516151807_TestConnectToRailway")]
     partial class TestConnectToRailway
     {
         /// <inheritdoc />
