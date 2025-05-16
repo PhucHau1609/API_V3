@@ -6,8 +6,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnetion")));
+
+
+
+// Tùy theo môi trường, chọn database provider
+var isProduction = builder.Environment.IsProduction();
+var connectionString = isProduction
+    ? builder.Configuration.GetConnectionString("RailwayConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Nếu là production (Railway) dùng PostgreSQL
+if (isProduction)
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 
 
 
