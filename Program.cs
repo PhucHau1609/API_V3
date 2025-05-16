@@ -15,6 +15,9 @@ var connectionString = isProduction
     ? builder.Configuration.GetConnectionString("RailwayConnection")
     : builder.Configuration.GetConnectionString("DefaultConnection");
 
+Console.WriteLine("Current connection string: " + connectionString);
+
+
 // Nếu là production (Railway) dùng PostgreSQL
 if (isProduction)
 {
