@@ -19,4 +19,4 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Chạy project
-ENTRYPOINT ["dotnet", "LabBackEndGame.dll"]
+ENTRYPOINT ["dotnet", "DATN_API.dll"]
