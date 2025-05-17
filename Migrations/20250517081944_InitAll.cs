@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DATN_API.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitAll : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
