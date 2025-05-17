@@ -45,6 +45,7 @@ namespace DATN_API.Controllers
                 {
                     email = user.Email,
                     userName = user.Username,
+                    name = user.Username,
                 }
             });
         }
