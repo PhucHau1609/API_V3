@@ -30,7 +30,12 @@ namespace DATN_API.Controllers
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
             if (existingUser != null)
             {
-                return BadRequest("Email này đã được sử dụng.");
+                 return Ok(new
+                {
+                    isSuccess = false,
+                    notification = "Email đã được sử dụng.",
+                    data = (object)null
+                });
             }
 
             var newUser = new User
@@ -43,7 +48,16 @@ namespace DATN_API.Controllers
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
-            return Ok("Đăng ký thành công!");
+            return Ok(new
+            {
+                isSuccess = true,
+                notification = "Đăng ký thành công!",
+                data = new
+                {
+                    Email = newUser.Email,
+                    Name = newUser.Username
+                }
+            });
         }
     }
 }
