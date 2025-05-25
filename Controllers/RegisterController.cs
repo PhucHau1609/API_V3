@@ -26,6 +26,18 @@ namespace DATN_API.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDTO request)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage).ToList();
+
+                return Ok(new
+                {
+                    isSuccess = false,
+                    notification = string.Join(" | ", errors),
+                    data = (object)null
+                });
+            }
             // Kiểm tra xem email đã tồn tại chưa
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
             if (existingUser != null)

@@ -25,6 +25,19 @@ namespace DATN_API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO request)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage).ToList();
+
+                return Ok(new LoginResponseModel
+                {
+                    IsSuccess = false,
+                    Notification = string.Join(" | ", errors),
+                    Data = null
+                });
+            }
+
             var user = await _context.Users.FirstOrDefaultAsync(x =>
                 x.Email == request.Email && x.Password == request.Password);
 
