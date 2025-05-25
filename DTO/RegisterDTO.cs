@@ -13,7 +13,7 @@ namespace DATN_API.DTO
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Email không được để trống")]
-        [MaxLength(15, ErrorMessage = "Email không vượt quá 15 ký tự")]
+        [MaxLength(20, ErrorMessage = "Email không vượt quá 15 ký tự")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         public string Email { get; set; }
 
