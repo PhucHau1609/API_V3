@@ -5,7 +5,7 @@
 namespace DATN_API.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateSaveV2 : Migration
+    public partial class InitialPostgresv2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

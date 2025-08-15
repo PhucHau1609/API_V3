@@ -17,7 +17,7 @@ namespace DATN_API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -30,8 +30,8 @@ namespace DATN_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SaveDataId"));
 
-                    b.Property<float>("Health")
-                        .HasColumnType("real");
+                    b.Property<double>("Health")
+                        .HasColumnType("double precision");
 
                     b.Property<int?>("LastCheckpointID")
                         .HasColumnType("integer");
@@ -39,17 +39,17 @@ namespace DATN_API.Migrations
                     b.Property<string>("LastCheckpointScene")
                         .HasColumnType("text");
 
-                    b.Property<float>("MaxHealth")
-                        .HasColumnType("real");
+                    b.Property<double>("MaxHealth")
+                        .HasColumnType("double precision");
 
-                    b.Property<float>("PosX")
-                        .HasColumnType("real");
+                    b.Property<double>("PosX")
+                        .HasColumnType("double precision");
 
-                    b.Property<float>("PosY")
-                        .HasColumnType("real");
+                    b.Property<double>("PosY")
+                        .HasColumnType("double precision");
 
-                    b.Property<float>("PosZ")
-                        .HasColumnType("real");
+                    b.Property<double>("PosZ")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
