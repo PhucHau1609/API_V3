@@ -21,6 +21,7 @@ Console.WriteLine("Current connection string: " + connectionString);
 // Nếu là production (Railway) dùng PostgreSQL
 if (isProduction)
 {
+    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // optional
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
 }
@@ -41,6 +42,24 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+
+// Auto‑migrate DB khi app khởi động (đặc biệt hữu ích trên Railway)
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        Console.WriteLine("==> Applying migrations for DB: " + db.Database.GetDbConnection().ConnectionString);
+        db.Database.Migrate();
+        Console.WriteLine("==> Migrations applied.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("==> Migration failed: " + ex);
+        throw; // để Railway log thấy lỗi sớm
+    }
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
