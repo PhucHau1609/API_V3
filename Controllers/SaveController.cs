@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DATN_API.Data;
+using DATN_API.DTO;
 using DATN_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,30 +23,51 @@ namespace DATN_API.Controllers
             _context = context;
         }
 
+        // Upsert save
         [HttpPost("SaveGame")]
-        public async Task<IActionResult> SaveGame([FromBody] SaveData model)
+        public async Task<IActionResult> SaveGame([FromBody] SaveGameDTO model)
         {
-            var existingData = await _context.SaveDatas.FirstOrDefaultAsync(s => s.UserId == model.UserId);
+            // (Optional) kiểm tra user tồn tại
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == model.UserId);
+            if (!userExists)
+                return BadRequest(new { isSuccess = false, message = "User không tồn tại." });
+
+            var existingData = await _context.SaveDatas
+                .FirstOrDefaultAsync(s => s.UserId == model.UserId);
 
             if (existingData != null)
             {
-                // Cập nhật dữ liệu
                 existingData.PosX = model.PosX;
                 existingData.PosY = model.PosY;
                 existingData.PosZ = model.PosZ;
                 existingData.Health = model.Health;
+                existingData.MaxHealth = model.MaxHealth;
+                existingData.LastCheckpointID = model.LastCheckpointID;
+                existingData.LastCheckpointScene = model.LastCheckpointScene;
+                existingData.UpdatedAt = DateTime.UtcNow;
             }
             else
             {
-                // Thêm mới
-                _context.SaveDatas.Add(model);
+                _context.SaveDatas.Add(new SaveData
+                {
+                    UserId = model.UserId,
+                    PosX = model.PosX,
+                    PosY = model.PosY,
+                    PosZ = model.PosZ,
+                    Health = model.Health,
+                    MaxHealth = model.MaxHealth,
+                    LastCheckpointID = model.LastCheckpointID,
+                    LastCheckpointScene = model.LastCheckpointScene,
+                    UpdatedAt = DateTime.UtcNow
+                });
             }
 
             await _context.SaveChangesAsync();
             return Ok(new { isSuccess = true, message = "Game saved successfully." });
         }
 
-        [HttpGet("LoadGame/{userId}")]
+        // Load save
+        [HttpGet("LoadGame/{userId:int}")]
         public async Task<IActionResult> LoadGame(int userId)
         {
             var saveData = await _context.SaveDatas.FirstOrDefaultAsync(s => s.UserId == userId);
@@ -57,9 +79,13 @@ namespace DATN_API.Controllers
             {
                 isSuccess = true,
                 health = saveData.Health,
+                maxHealth = saveData.MaxHealth,
                 posX = saveData.PosX,
                 posY = saveData.PosY,
-                posZ = saveData.PosZ
+                posZ = saveData.PosZ,
+                lastCheckpointID = saveData.LastCheckpointID,
+                lastCheckpointScene = saveData.LastCheckpointScene,
+                updatedAt = saveData.UpdatedAt
             });
         }
     }

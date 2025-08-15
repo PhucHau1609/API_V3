@@ -2,17 +2,17 @@
 using DATN_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace DATN_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517094728_LoginController")]
-    partial class LoginController
+    [Migration("20250618035150_UpdateDbLocal")]
+    partial class UpdateDbLocal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,17 +20,17 @@ namespace DATN_API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("DATN_API.Models.SaveData", b =>
                 {
                     b.Property<int>("SaveDataId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SaveDataId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaveDataId"));
 
                     b.Property<float>("Health")
                         .HasColumnType("real");
@@ -45,9 +45,11 @@ namespace DATN_API.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("SaveDataId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SaveDatas");
                 });
@@ -56,22 +58,38 @@ namespace DATN_API.Migrations
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("DATN_API.Models.SaveData", b =>
+                {
+                    b.HasOne("DATN_API.Models.User", "User")
+                        .WithMany("SaveData")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DATN_API.Models.User", b =>
+                {
+                    b.Navigation("SaveData");
                 });
 #pragma warning restore 612, 618
         }

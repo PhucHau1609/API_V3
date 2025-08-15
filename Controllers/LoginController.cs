@@ -56,6 +56,7 @@ namespace DATN_API.Controllers
                 Notification = "Đăng nhập thành công",
                 Data = new
                 {
+                    userId = user.UserId,        // <-- THÊM DÒNG NÀY
                     email = user.Email,
                     userName = user.Username,
                     name = user.Username,
